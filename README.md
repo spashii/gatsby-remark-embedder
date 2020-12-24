@@ -14,10 +14,7 @@
 [![version][version-badge]][package]
 [![downloads][downloads-badge]][npmtrends]
 [![MIT License][license-badge]][license]
-
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-19-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
+[![All Contributors][all-contributors-badge]](#contributors-)
 [![PRs Welcome][prs-badge]][prs]
 [![Code of Conduct][coc-badge]][coc]
 <!-- prettier-ignore-end -->
@@ -27,17 +24,18 @@
 Trying to embed well known services (like [CodePen][codepen],
 [CodeSandbox][codesandbox], [GIPHY][giphy], [Instagram][instagram],
 [Lichess][lichess], [Pinterest][pinterest], [Slides][slides],
-[SoundCloud][soundcloud], [Spotify][spotify], [Streamable][streamable],
-[Twitch][twitch], [Twitter][twitter] or [YouTube][youtube]) into your
-[Gatsby][gatsby] website can be hard, since you have to know how this needs to
-be done for all of these different services.
+[SoundCloud][soundcloud], [Spotify][spotify], [Streamable][streamable], [Testing
+Playground][testing-playground], [Twitch][twitch], [Twitter][twitter] or
+[YouTube][youtube]) into your [Gatsby][gatsby] website can be hard, since you
+have to know how this needs to be done for all of these different services.
 
 ## This solution
 
 `gatsby-remark-embedder` tries to solve this problem for you by letting you just
-copy-paste the link to the gif/pen/pin/player/post/sandbox/tweet/video you want
-to embed right from within your browser onto a separate line (surrounded by
-empty lines) and replace it with the proper embed-code.
+copy-paste the link to the
+gif/pen/pin/player/playground/post/sandbox/tweet/video you want to embed right
+from within your browser onto a separate line (surrounded by empty lines) and
+replace it with the proper embed-code.
 
 ## Table of Contents
 
@@ -57,16 +55,12 @@ empty lines) and replace it with the proper embed-code.
   - [SoundCloud](#soundcloud)
   - [Spotify](#spotify)
   - [Streamable](#streamable)
+  - [Testing Playground](#testing-playground)
   - [Twitch](#twitch)
   - [Twitter](#twitter)
   - [YouTube](#youtube)
-- [Options](#options-1)
+- [Options](#options)
   - [customTransformers](#customtransformers)
-    - [Properties](#properties)
-      - [`getHTML(url, options)`](#gethtmlurl-options)
-      - [`name`](#name)
-      - [`shouldTransform(url)`](#shouldtransformurl)
-    - [Example transformer](#example-transformer)
   - [services](#services)
 - [Inspiration](#inspiration)
 - [Issues](#issues)
@@ -176,7 +170,7 @@ https://codepen.io/team/codepen/pen/PNaGbb
 ```
 
 <details>
-  <summary><b>Result</b></summary>
+<summary><b>Result</b></summary>
 
 ```html
 <iframe
@@ -382,6 +376,39 @@ https://instagram.com/p/B60jPE6J8U-
 
 </details>
 
+#### Options
+
+All options should go under the `Instagram` namespace.
+
+| name        | Type     | Required | Default | Description                                              |
+| ----------- | -------- | -------- | ------- | -------------------------------------------------------- |
+| accessToken | `string` | ✅       |         | An App Access Token (recommended) or Client Access Token |
+
+##### accessToken
+
+To get an App Access Token (recommended) or Client Access Token for the
+Instagram embed, check out the [Instagram oEmbed access token
+docs][instagram-oembed-access-token-docs] and
+[requirements][instagram-oembed-requirements-docs].
+
+The safest way to enter your `accessToken` is to set is as an [environment
+variable][gatsby-environment-variables-docs].
+
+<details>
+<summary><b>Example</b></summary>
+
+```js
+const GatsbyRemarkEmbedderOptions = {
+  services: {
+    Instagram: {
+      accessToken: process.env.INSTAGRAM_ACCESS_TOKEN,
+    },
+  },
+};
+```
+
+</details>
+
 ### Lichess
 
 #### Usage
@@ -530,6 +557,31 @@ https://streamable.com/moo
 
 </details>
 
+### Testing Playground
+
+#### Usage
+
+```md
+https://testing-playground.com/gist/fb336c386145b235372a0f57d5c58205/6d13e4ee508301c8b42f9d2cc8584e70bb05fb4a
+```
+
+<details>
+<summary><b>Result</b></summary>
+
+```html
+<iframe
+  src="https://testing-playground.com/embed/fb336c386145b235372a0f57d5c58205/6d13e4ee508301c8b42f9d2cc8584e70bb05fb4a?panes=query,preview"
+  height="450"
+  width="100%"
+  scrolling="no"
+  frameborder="0"
+  allowTransparency="true"
+  style="overflow: hidden; display: block; width: 100%"
+></iframe>
+```
+
+</details>
+
 ### Twitch
 
 Twitch embeds can only be embedded on HTTPS websites. Check out [the Gatsby
@@ -584,9 +636,9 @@ const GatsbyRemarkEmbedderOptions = {
   services: {
     Twitch: {
       parent: [
-        env.process.URL,
-        env.process.DEPLOY_URL,
-        env.process.DEPLOY_PRIME_URL,
+        process.env.URL,
+        process.env.DEPLOY_URL,
+        process.env.DEPLOY_PRIME_URL,
 
         // Other domains here...
       ],
@@ -610,7 +662,7 @@ const GatsbyRemarkEmbedderOptions = {
   services: {
     Twitch: {
       parent: [
-        env.process.VERCEL_URL,
+        process.env.VERCEL_URL,
 
         // Other domains here...
       ],
@@ -821,12 +873,17 @@ Thanks goes to these people ([emoji key][emojis]):
     <td align="center"><a href="http://simonmacdonald.com"><img src="https://avatars1.githubusercontent.com/u/353180?v=4" width="100px;" alt=""/><br /><sub><b>Simon MacDonald</b></sub></a><br /><a href="https://github.com/MichaelDeBoey/gatsby-remark-embedder/issues?q=author%3Amacdonst" title="Bug reports">🐛</a> <a href="https://github.com/MichaelDeBoey/gatsby-remark-embedder/commits?author=macdonst" title="Code">💻</a> <a href="https://github.com/MichaelDeBoey/gatsby-remark-embedder/commits?author=macdonst" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://nickymeuleman.netlify.app/"><img src="https://avatars2.githubusercontent.com/u/30179461?v=4" width="100px;" alt=""/><br /><sub><b>Nicky Meuleman</b></sub></a><br /><a href="https://github.com/MichaelDeBoey/gatsby-remark-embedder/commits?author=NickyMeuleman" title="Code">💻</a></td>
     <td align="center"><a href="http://heyayush.dev"><img src="https://avatars3.githubusercontent.com/u/17379963?v=4" width="100px;" alt=""/><br /><sub><b>Ayush</b></sub></a><br /><a href="https://github.com/MichaelDeBoey/gatsby-remark-embedder/commits?author=heyAyushh" title="Code">💻</a></td>
+    <td align="center"><a href="https://teeaarbee.com/"><img src="https://avatars1.githubusercontent.com/u/65780147?v=4" width="100px;" alt=""/><br /><sub><b>TEEAARBEE</b></sub></a><br /><a href="https://github.com/MichaelDeBoey/gatsby-remark-embedder/issues?q=author%3Ateeaarbee" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://trevorblades.com"><img src="https://avatars0.githubusercontent.com/u/1216917?v=4" width="100px;" alt=""/><br /><sub><b>Trevor Blades</b></sub></a><br /><a href="https://github.com/MichaelDeBoey/gatsby-remark-embedder/commits?author=trevorblades" title="Documentation">📖</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="http://wooorm.com"><img src="https://avatars0.githubusercontent.com/u/944406?v=4" width="100px;" alt=""/><br /><sub><b>Titus</b></sub></a><br /><a href="https://github.com/MichaelDeBoey/gatsby-remark-embedder/commits?author=wooorm" title="Tests">⚠️</a> <a href="https://github.com/MichaelDeBoey/gatsby-remark-embedder/pulls?q=is%3Apr+reviewed-by%3Awooorm" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/MichaelDeBoey/gatsby-remark-embedder/commits?author=wooorm" title="Code">💻</a></td>
+    <td align="center"><a href="https://joeprevite.com"><img src="https://avatars3.githubusercontent.com/u/3806031?v=4" width="100px;" alt=""/><br /><sub><b>Joe Previte</b></sub></a><br /><a href="https://github.com/MichaelDeBoey/gatsby-remark-embedder/issues?q=author%3Ajsjoeio" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
-
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors][all-contributors] specification.
@@ -837,25 +894,26 @@ Contributions of any kind welcome!
 MIT
 
 <!-- prettier-ignore-start -->
-[npm]: https://npmjs.com
+[npm]: https://www.npmjs.com
 [node]: https://nodejs.org
-[build-badge]: https://img.shields.io/travis/com/MichaelDeBoey/gatsby-remark-embedder.svg?style=flat-square
-[build]: https://travis-ci.com/MichaelDeBoey/gatsby-remark-embedder
+[build-badge]: https://img.shields.io/github/workflow/status/MichaelDeBoey/gatsby-remark-embedder/validate?logo=github&style=flat-square
+[build]: https://github.com/MichaelDeBoey/gatsby-remark-embedder/actions?query=workflow%3Avalidate
 [coverage-badge]: https://img.shields.io/codecov/c/github/MichaelDeBoey/gatsby-remark-embedder.svg?style=flat-square
 [coverage]: https://codecov.io/github/MichaelDeBoey/gatsby-remark-embedder
 [version-badge]: https://img.shields.io/npm/v/gatsby-remark-embedder.svg?style=flat-square
 [package]: https://www.npmjs.com/package/gatsby-remark-embedder
 [downloads-badge]: https://img.shields.io/npm/dm/gatsby-remark-embedder.svg?style=flat-square
-[npmtrends]: http://www.npmtrends.com/gatsby-remark-embedder
+[npmtrends]: https://www.npmtrends.com/gatsby-remark-embedder
 [license-badge]: https://img.shields.io/npm/l/gatsby-remark-embedder.svg?style=flat-square
 [license]: https://github.com/MichaelDeBoey/gatsby-remark-embedder/blob/master/LICENSE
 [prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
-[prs]: http://makeapullrequest.com
+[prs]: https://makeapullrequest.com
 [coc-badge]: https://img.shields.io/badge/code%20of-conduct-ff69b4.svg?style=flat-square
-[coc]: https://github.com/MichaelDeBoey/gatsby-remark-embedder/blob/master/other/CODE_OF_CONDUCT.md
+[coc]: https://github.com/MichaelDeBoey/gatsby-remark-embedder/blob/master/CODE_OF_CONDUCT.md
 [emojis]: https://allcontributors.org/docs/en/emoji-key
 [all-contributors]: https://github.com/all-contributors/all-contributors
-[bugs]: https://github.com/MichaelDeBoey/gatsby-remark-embedder/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3A%22%F0%9F%90%9B+Bug%22+sort%3Acreated-desc
+[all-contributors-badge]: https://img.shields.io/github/all-contributors/MichaelDeBoey/gatsby-remark-embedder?color=orange&style=flat-square
+[bugs]: https://github.com/MichaelDeBoey/gatsby-remark-embedder/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+sort%3Acreated-desc+label%3Abug
 [requests]: https://github.com/MichaelDeBoey/gatsby-remark-embedder/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc+label%3Aenhancement
 [good-first-issue]: https://github.com/MichaelDeBoey/gatsby-remark-embedder/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc+label%3A%22good+first+issue%22
 
@@ -863,6 +921,7 @@ MIT
 [codesandbox]: https://codesandbox.io
 [embedded-tweet-docs]: https://developer.twitter.com/web/embedded-tweets
 [gatsby]: https://github.com/gatsbyjs/gatsby
+[gatsby-environment-variables-docs]: https://www.gatsbyjs.com/docs/environment-variables
 [gatsby-https-docs]: https://gatsbyjs.org/docs/local-https
 [gatsby-plugin-instagram-embed]: https://github.com/MichaelDeBoey/gatsby-plugin-instagram-embed
 [gatsby-plugin-mdx]: https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-plugin-mdx
@@ -871,6 +930,8 @@ MIT
 [gatsby-transformer-remark]: https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-transformer-remark
 [giphy]: https://giphy.com
 [instagram]: https://instagram.com
+[instagram-oembed-access-token-docs]: https://developers.facebook.com/docs/instagram/oembed#access-tokens
+[instagram-oembed-requirements-docs]: https://developers.facebook.com/docs/instagram/oembed#requirements
 [kentcdodds.com-repo]: https://github.com/kentcdodds/kentcdodds.com
 [lichess]: https://lichess.org
 [netlify-environment-variables-docs]: https://docs.netlify.com/configure-builds/environment-variables/#deploy-urls-and-metadata
@@ -879,6 +940,7 @@ MIT
 [soundcloud]: https://soundcloud.com
 [spotify]: https://spotify.com
 [streamable]: https://streamable.com
+[testing-playground]: https://testing-playground.com
 [twitch]: https://twitch.tv
 [twitter]: https://twitter.com
 [twitter-widget-javascript-docs]: https://developer.twitter.com/en/docs/twitter-for-websites/javascript-api/overview

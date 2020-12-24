@@ -8,7 +8,7 @@ import {
   shouldTransform,
 } from '../../transformers/Twitch';
 
-import { cache, getMarkdownASTForFile, parseASTToMarkdown } from '../helpers';
+import { cache, getMarkdownASTForFile, mdastToHtml } from '../helpers';
 
 cases(
   'url validation',
@@ -201,7 +201,7 @@ test('Gets the correct Twitch iframe', () => {
   });
 
   expect(html).toMatchInlineSnapshot(
-    `"<iframe src=\\"https://player.twitch.tv?video=546761743&parent=embed.example.com\\" height=\\"300\\" width=\\"100%\\" frameborder=\\"0\\" scrolling=\\"no\\" allowfullscreen></iframe>"`
+    `<iframe src="https://player.twitch.tv?video=546761743&parent=embed.example.com" height="300" width="100%" frameborder="0" scrolling="no" allowfullscreen></iframe>`
   );
 });
 
@@ -219,50 +219,29 @@ test('Plugin can transform Twitch links', async () => {
     }
   );
 
-  expect(parseASTToMarkdown(processedAST)).toMatchInlineSnapshot(`
-    "<https://not-a-twitch-url.tv>
+  expect(mdastToHtml(processedAST)).toMatchInlineSnapshot(`
+    <p>https://not-a-twitch-url.tv</p>
+    <p>https://this-is-not-twitch.tv</p>
+    <p>https://blog.twitch.tv</p>
+    <p>https://twitch.tv/jlengstorf/followers</p>
+    <p>https://twitch.tv</p>
+    <p>https://twitch.tv/settings/profile</p>
+    <p>https://twitch.tv/jlengstorf/videos</p>
+    <p>https://clips.twitch.tv/embed?clip=PeacefulAbstrusePorcupineDansGame</p>
+    <iframe src="https://player.twitch.tv?channel=jlengstorf&#x26;parent=embed.example.com" height="300" width="100%" frameborder="0" scrolling="no" allowfullscreen></iframe>
+    <iframe src="https://player.twitch.tv?channel=jlengstorf&#x26;parent=embed.example.com" height="300" width="100%" frameborder="0" scrolling="no" allowfullscreen></iframe>
+    <iframe src="https://player.twitch.tv?channel=jlengstorf&#x26;parent=embed.example.com" height="300" width="100%" frameborder="0" scrolling="no" allowfullscreen></iframe>
+    <iframe src="https://clips.twitch.tv/embed?clip=PeacefulAbstrusePorcupineDansGame&#x26;parent=embed.example.com" height="300" width="100%" frameborder="0" scrolling="no" allowfullscreen></iframe>
+    <iframe src="https://clips.twitch.tv/embed?clip=PeacefulAbstrusePorcupineDansGame&#x26;parent=embed.example.com" height="300" width="100%" frameborder="0" scrolling="no" allowfullscreen></iframe>
+    <iframe src="https://clips.twitch.tv/embed?clip=PeacefulAbstrusePorcupineDansGame&#x26;parent=embed.example.com" height="300" width="100%" frameborder="0" scrolling="no" allowfullscreen></iframe>
+    <iframe src="https://player.twitch.tv?collection=DHetedhyqBSVMg&#x26;parent=embed.example.com" height="300" width="100%" frameborder="0" scrolling="no" allowfullscreen></iframe>
+    <iframe src="https://player.twitch.tv?collection=DHetedhyqBSVMg&#x26;parent=embed.example.com" height="300" width="100%" frameborder="0" scrolling="no" allowfullscreen></iframe>
+    <iframe src="https://player.twitch.tv?collection=DHetedhyqBSVMg&#x26;parent=embed.example.com" height="300" width="100%" frameborder="0" scrolling="no" allowfullscreen></iframe>
+    <iframe src="https://player.twitch.tv?collection=DHetedhyqBSVMg&#x26;parent=embed.example.com" height="300" width="100%" frameborder="0" scrolling="no" allowfullscreen></iframe>
+    <iframe src="https://player.twitch.tv?collection=DHetedhyqBSVMg&#x26;parent=embed.example.com" height="300" width="100%" frameborder="0" scrolling="no" allowfullscreen></iframe>
+    <iframe src="https://player.twitch.tv?video=546761743&#x26;parent=embed.example.com" height="300" width="100%" frameborder="0" scrolling="no" allowfullscreen></iframe>
+    <iframe src="https://player.twitch.tv?video=546761743&#x26;parent=embed.example.com" height="300" width="100%" frameborder="0" scrolling="no" allowfullscreen></iframe>
+    <iframe src="https://player.twitch.tv?video=546761743&#x26;parent=embed.example.com" height="300" width="100%" frameborder="0" scrolling="no" allowfullscreen></iframe>
 
-    <https://this-is-not-twitch.tv>
-
-    <https://blog.twitch.tv>
-
-    <https://twitch.tv/jlengstorf/followers>
-
-    <https://twitch.tv>
-
-    <https://twitch.tv/settings/profile>
-
-    <https://twitch.tv/jlengstorf/videos>
-
-    <https://clips.twitch.tv/embed?clip=PeacefulAbstrusePorcupineDansGame>
-
-    <iframe src=\\"https://player.twitch.tv?channel=jlengstorf&parent=embed.example.com\\" height=\\"300\\" width=\\"100%\\" frameborder=\\"0\\" scrolling=\\"no\\" allowfullscreen></iframe>
-
-    <iframe src=\\"https://player.twitch.tv?channel=jlengstorf&parent=embed.example.com\\" height=\\"300\\" width=\\"100%\\" frameborder=\\"0\\" scrolling=\\"no\\" allowfullscreen></iframe>
-
-    <iframe src=\\"https://player.twitch.tv?channel=jlengstorf&parent=embed.example.com\\" height=\\"300\\" width=\\"100%\\" frameborder=\\"0\\" scrolling=\\"no\\" allowfullscreen></iframe>
-
-    <iframe src=\\"https://clips.twitch.tv/embed?clip=PeacefulAbstrusePorcupineDansGame&parent=embed.example.com\\" height=\\"300\\" width=\\"100%\\" frameborder=\\"0\\" scrolling=\\"no\\" allowfullscreen></iframe>
-
-    <iframe src=\\"https://clips.twitch.tv/embed?clip=PeacefulAbstrusePorcupineDansGame&parent=embed.example.com\\" height=\\"300\\" width=\\"100%\\" frameborder=\\"0\\" scrolling=\\"no\\" allowfullscreen></iframe>
-
-    <iframe src=\\"https://clips.twitch.tv/embed?clip=PeacefulAbstrusePorcupineDansGame&parent=embed.example.com\\" height=\\"300\\" width=\\"100%\\" frameborder=\\"0\\" scrolling=\\"no\\" allowfullscreen></iframe>
-
-    <iframe src=\\"https://player.twitch.tv?collection=DHetedhyqBSVMg&parent=embed.example.com\\" height=\\"300\\" width=\\"100%\\" frameborder=\\"0\\" scrolling=\\"no\\" allowfullscreen></iframe>
-
-    <iframe src=\\"https://player.twitch.tv?collection=DHetedhyqBSVMg&parent=embed.example.com\\" height=\\"300\\" width=\\"100%\\" frameborder=\\"0\\" scrolling=\\"no\\" allowfullscreen></iframe>
-
-    <iframe src=\\"https://player.twitch.tv?collection=DHetedhyqBSVMg&parent=embed.example.com\\" height=\\"300\\" width=\\"100%\\" frameborder=\\"0\\" scrolling=\\"no\\" allowfullscreen></iframe>
-
-    <iframe src=\\"https://player.twitch.tv?collection=DHetedhyqBSVMg&parent=embed.example.com\\" height=\\"300\\" width=\\"100%\\" frameborder=\\"0\\" scrolling=\\"no\\" allowfullscreen></iframe>
-
-    <iframe src=\\"https://player.twitch.tv?collection=DHetedhyqBSVMg&parent=embed.example.com\\" height=\\"300\\" width=\\"100%\\" frameborder=\\"0\\" scrolling=\\"no\\" allowfullscreen></iframe>
-
-    <iframe src=\\"https://player.twitch.tv?video=546761743&parent=embed.example.com\\" height=\\"300\\" width=\\"100%\\" frameborder=\\"0\\" scrolling=\\"no\\" allowfullscreen></iframe>
-
-    <iframe src=\\"https://player.twitch.tv?video=546761743&parent=embed.example.com\\" height=\\"300\\" width=\\"100%\\" frameborder=\\"0\\" scrolling=\\"no\\" allowfullscreen></iframe>
-
-    <iframe src=\\"https://player.twitch.tv?video=546761743&parent=embed.example.com\\" height=\\"300\\" width=\\"100%\\" frameborder=\\"0\\" scrolling=\\"no\\" allowfullscreen></iframe>
-    "
   `);
 });

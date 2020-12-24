@@ -9,7 +9,7 @@ import {
   shouldTransform,
 } from '../../transformers/GIPHY';
 
-import { cache, getMarkdownASTForFile, parseASTToMarkdown } from '../helpers';
+import { cache, getMarkdownASTForFile, mdastToHtml } from '../helpers';
 
 const { Response } = jest.requireActual('node-fetch');
 jest.mock('node-fetch', () => jest.fn());
@@ -132,7 +132,7 @@ test('Gets the correct GIPHY iframe', async () => {
   );
 
   expect(html).toMatchInlineSnapshot(
-    `"<div style=\\"width:100%;height:0;padding-bottom:63%;position:relative;\\"><iframe src=\\"https://giphy.com/embed/XatG8bioEwwVO\\" width=\\"100%\\" height=\\"100%\\" style=\\"position:absolute\\" frameborder=\\"0\\" class=\\"giphy-embed\\" allowfullscreen></iframe></div>"`
+    `<div style="width:100%;height:0;padding-bottom:63%;position:relative;"><iframe src="https://giphy.com/embed/XatG8bioEwwVO" width="100%" height="100%" style="position:absolute" frameborder="0" class="giphy-embed" allowfullscreen></iframe></div>`
   );
 });
 
@@ -143,26 +143,17 @@ test('Plugin can transform GIPHY links', async () => {
 
   const processedAST = await plugin({ cache, markdownAST });
 
-  expect(parseASTToMarkdown(processedAST)).toMatchInlineSnapshot(`
-    "<https://not-a-giphy-url.com>
+  expect(mdastToHtml(processedAST)).toMatchInlineSnapshot(`
+    <p>https://not-a-giphy-url.com</p>
+    <p>https://this-is-not-giphy.com</p>
+    <p>https://this-is-not-giphy.com/gifs/howtogiphygifs-how-to-XatG8bioEwwVO</p>
+    <p>https://giphy.com</p>
+    <p>https://giphy.com/videos/blesstheharts-wayne-bless-the-harts-ciwJyqlgAYkvguS2Nw</p>
+    <div style="width:100%;height:0;padding-bottom:63%;position:relative;"><iframe src="https://giphy.com/embed/XatG8bioEwwVO" width="100%" height="100%" style="position:absolute" frameborder="0" class="giphy-embed" allowfullscreen></iframe></div>
+    <div style="width:100%;height:0;padding-bottom:63%;position:relative;"><iframe src="https://giphy.com/embed/XatG8bioEwwVO" width="100%" height="100%" style="position:absolute" frameborder="0" class="giphy-embed" allowfullscreen></iframe></div>
+    <div style="width:100%;height:0;padding-bottom:63%;position:relative;"><iframe src="https://giphy.com/embed/XatG8bioEwwVO" width="100%" height="100%" style="position:absolute" frameborder="0" class="giphy-embed" allowfullscreen></iframe></div>
+    <div style="width:100%;height:0;padding-bottom:63%;position:relative;"><iframe src="https://giphy.com/embed/XatG8bioEwwVO" width="100%" height="100%" style="position:absolute" frameborder="0" class="giphy-embed" allowfullscreen></iframe></div>
+    <div style="width:100%;height:0;padding-bottom:63%;position:relative;"><iframe src="https://giphy.com/embed/XatG8bioEwwVO" width="100%" height="100%" style="position:absolute" frameborder="0" class="giphy-embed" allowfullscreen></iframe></div>
 
-    <https://this-is-not-giphy.com>
-
-    <https://this-is-not-giphy.com/gifs/howtogiphygifs-how-to-XatG8bioEwwVO>
-
-    <https://giphy.com>
-
-    <https://giphy.com/videos/blesstheharts-wayne-bless-the-harts-ciwJyqlgAYkvguS2Nw>
-
-    <div style=\\"width:100%;height:0;padding-bottom:63%;position:relative;\\"><iframe src=\\"https://giphy.com/embed/XatG8bioEwwVO\\" width=\\"100%\\" height=\\"100%\\" style=\\"position:absolute\\" frameborder=\\"0\\" class=\\"giphy-embed\\" allowfullscreen></iframe></div>
-
-    <div style=\\"width:100%;height:0;padding-bottom:63%;position:relative;\\"><iframe src=\\"https://giphy.com/embed/XatG8bioEwwVO\\" width=\\"100%\\" height=\\"100%\\" style=\\"position:absolute\\" frameborder=\\"0\\" class=\\"giphy-embed\\" allowfullscreen></iframe></div>
-
-    <div style=\\"width:100%;height:0;padding-bottom:63%;position:relative;\\"><iframe src=\\"https://giphy.com/embed/XatG8bioEwwVO\\" width=\\"100%\\" height=\\"100%\\" style=\\"position:absolute\\" frameborder=\\"0\\" class=\\"giphy-embed\\" allowfullscreen></iframe></div>
-
-    <div style=\\"width:100%;height:0;padding-bottom:63%;position:relative;\\"><iframe src=\\"https://giphy.com/embed/XatG8bioEwwVO\\" width=\\"100%\\" height=\\"100%\\" style=\\"position:absolute\\" frameborder=\\"0\\" class=\\"giphy-embed\\" allowfullscreen></iframe></div>
-
-    <div style=\\"width:100%;height:0;padding-bottom:63%;position:relative;\\"><iframe src=\\"https://giphy.com/embed/XatG8bioEwwVO\\" width=\\"100%\\" height=\\"100%\\" style=\\"position:absolute\\" frameborder=\\"0\\" class=\\"giphy-embed\\" allowfullscreen></iframe></div>
-    "
   `);
 });

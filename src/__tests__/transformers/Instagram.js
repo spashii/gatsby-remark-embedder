@@ -4,7 +4,7 @@ import fetchMock from 'node-fetch';
 import plugin from '../../';
 import { getHTML, shouldTransform } from '../../transformers/Instagram';
 
-import { cache, getMarkdownASTForFile, parseASTToMarkdown } from '../helpers';
+import { cache, getMarkdownASTForFile, mdastToHtml } from '../helpers';
 
 const { Response } = jest.requireActual('node-fetch');
 jest.mock('node-fetch', () => jest.fn());
@@ -101,60 +101,54 @@ cases(
 
 test('Gets the correct Instagram iframe', async () => {
   mockFetch(
-    `<blockquote class="instagram-media-mocked-fetch-transformer"><div><a href="https://instagram.com/p/B60jPE6J8U-"><p>example</p></a><p>A post shared by <a href="https://instagram.com/michaeldeboey">Michaël De Boey</a> (@michaeldeboey) on<timedatetime="2020-01-02T14:45:30+00:00">Jan 2, 2020 at 6:45am PST</time></p></div></blockquote>`
+    `<blockquote class="instagram-media-mocked-fetch-transformer"><div><a href="https://instagram.com/p/B60jPE6J8U-"><p>example</p></a><p>A post shared by <a href="https://instagram.com/michaeldeboey">Michaël De Boey</a> (@michaeldeboey) on<time datetime="2020-01-02T14:45:30+00:00">Jan 2, 2020 at 6:45am PST</time></p></div></blockquote>`
   );
 
-  const html = await getHTML('https://instagram.com/p/B60jPE6J8U-');
+  const html = await getHTML('https://instagram.com/p/B60jPE6J8U-', {
+    accessToken: 'access-token',
+  });
 
   expect(html).toMatchInlineSnapshot(
-    `"<blockquote class=\\"instagram-media-mocked-fetch-transformer\\"><div><a href=\\"https://instagram.com/p/B60jPE6J8U-\\"><p>example</p></a><p>A post shared by <a href=\\"https://instagram.com/michaeldeboey\\">Michaël De Boey</a> (@michaeldeboey) on<timedatetime=\\"2020-01-02T14:45:30+00:00\\">Jan 2, 2020 at 6:45am PST</time></p></div></blockquote>"`
+    `<blockquote class="instagram-media-mocked-fetch-transformer"><div><a href="https://instagram.com/p/B60jPE6J8U-"><p>example</p></a><p>A post shared by <a href="https://instagram.com/michaeldeboey">Michaël De Boey</a> (@michaeldeboey) on<time datetime="2020-01-02T14:45:30+00:00">Jan 2, 2020 at 6:45am PST</time></p></div></blockquote>`
   );
 });
 
 test('Plugin can transform Instagram links', async () => {
   mockFetch(
-    `<blockquote class="instagram-media-mocked-fetch-plugin"><div><a href="https://instagram.com/p/B60jPE6J8U-"><p>example</p></a><p>A post shared by <a href="https://instagram.com/michaeldeboey">Michaël De Boey</a> (@michaeldeboey) on<timedatetime="2020-01-02T14:45:30+00:00">Jan 2, 2020 at 6:45am PST</time></p></div></blockquote>`
+    `<blockquote class="instagram-media-mocked-fetch-plugin"><div><a href="https://instagram.com/p/B60jPE6J8U-"><p>example</p></a><p>A post shared by <a href="https://instagram.com/michaeldeboey">Michaël De Boey</a> (@michaeldeboey) on<time datetime="2020-01-02T14:45:30+00:00">Jan 2, 2020 at 6:45am PST</time></p></div></blockquote>`
   );
   const markdownAST = getMarkdownASTForFile('Instagram');
 
-  const processedAST = await plugin({ cache, markdownAST });
+  const processedAST = await plugin(
+    { cache, markdownAST },
+    {
+      services: {
+        Instagram: {
+          accessToken: 'access-token',
+        },
+      },
+    }
+  );
 
-  expect(parseASTToMarkdown(processedAST)).toMatchInlineSnapshot(`
-    "<https://not-an-instagram-url.com>
+  expect(mdastToHtml(processedAST)).toMatchInlineSnapshot(`
+    <p>https://not-an-instagram-url.com</p>
+    <p>https://this-is-not-instagr.am</p>
+    <p>https://this-is-not-instagram.com</p>
+    <p>https://this-is-not-instagr.am/p/B60jPE6J8U-</p>
+    <p>https://this-is-not-instagram.com/p/B60jPE6J8U-</p>
+    <p>https://instagram.com</p>
+    <p>https://instagram.com/accounts/activity</p>
+    <p>https://instagram.com/accounts/edit</p>
+    <p>https://instagram.com/accounts/password/change</p>
+    <p>https://instagram.com/explore</p>
+    <p>https://instagram.com/nametag</p>
+    <p>https://instagram.com/MichaelDeBoey</p>
+    <p>https://about.instagram.com</p>
+    <p>https://help.instagram.com</p>
+    <blockquote class="instagram-media-mocked-fetch-plugin"><div><a href="https://instagram.com/p/B60jPE6J8U-"><p>example</p></a><p>A post shared by <a href="https://instagram.com/michaeldeboey">Michaël De Boey</a> (@michaeldeboey) on<time datetime="2020-01-02T14:45:30+00:00">Jan 2, 2020 at 6:45am PST</time></p></div></blockquote>
+    <blockquote class="instagram-media-mocked-fetch-plugin"><div><a href="https://instagram.com/p/B60jPE6J8U-"><p>example</p></a><p>A post shared by <a href="https://instagram.com/michaeldeboey">Michaël De Boey</a> (@michaeldeboey) on<time datetime="2020-01-02T14:45:30+00:00">Jan 2, 2020 at 6:45am PST</time></p></div></blockquote>
+    <blockquote class="instagram-media-mocked-fetch-plugin"><div><a href="https://instagram.com/p/B60jPE6J8U-"><p>example</p></a><p>A post shared by <a href="https://instagram.com/michaeldeboey">Michaël De Boey</a> (@michaeldeboey) on<time datetime="2020-01-02T14:45:30+00:00">Jan 2, 2020 at 6:45am PST</time></p></div></blockquote>
+    <blockquote class="instagram-media-mocked-fetch-plugin"><div><a href="https://instagram.com/p/B60jPE6J8U-"><p>example</p></a><p>A post shared by <a href="https://instagram.com/michaeldeboey">Michaël De Boey</a> (@michaeldeboey) on<time datetime="2020-01-02T14:45:30+00:00">Jan 2, 2020 at 6:45am PST</time></p></div></blockquote>
 
-    <https://this-is-not-instagr.am>
-
-    <https://this-is-not-instagram.com>
-
-    '<https://this-is-not-instagr.am/p/B60jPE6J8U->
-
-    <https://this-is-not-instagram.com/p/B60jPE6J8U->
-
-    <https://instagram.com>
-
-    <https://instagram.com/accounts/activity>
-
-    <https://instagram.com/accounts/edit>
-
-    <https://instagram.com/accounts/password/change>
-
-    <https://instagram.com/explore>
-
-    <https://instagram.com/nametag>
-
-    <https://instagram.com/MichaelDeBoey>
-
-    <https://about.instagram.com>
-
-    <https://help.instagram.com>
-
-    <blockquote class=\\"instagram-media-mocked-fetch-plugin\\"><div><a href=\\"https://instagram.com/p/B60jPE6J8U-\\"><p>example</p></a><p>A post shared by <a href=\\"https://instagram.com/michaeldeboey\\">Michaël De Boey</a> (@michaeldeboey) on<timedatetime=\\"2020-01-02T14:45:30+00:00\\">Jan 2, 2020 at 6:45am PST</time></p></div></blockquote>
-
-    <blockquote class=\\"instagram-media-mocked-fetch-plugin\\"><div><a href=\\"https://instagram.com/p/B60jPE6J8U-\\"><p>example</p></a><p>A post shared by <a href=\\"https://instagram.com/michaeldeboey\\">Michaël De Boey</a> (@michaeldeboey) on<timedatetime=\\"2020-01-02T14:45:30+00:00\\">Jan 2, 2020 at 6:45am PST</time></p></div></blockquote>
-
-    <blockquote class=\\"instagram-media-mocked-fetch-plugin\\"><div><a href=\\"https://instagram.com/p/B60jPE6J8U-\\"><p>example</p></a><p>A post shared by <a href=\\"https://instagram.com/michaeldeboey\\">Michaël De Boey</a> (@michaeldeboey) on<timedatetime=\\"2020-01-02T14:45:30+00:00\\">Jan 2, 2020 at 6:45am PST</time></p></div></blockquote>
-
-    <blockquote class=\\"instagram-media-mocked-fetch-plugin\\"><div><a href=\\"https://instagram.com/p/B60jPE6J8U-\\"><p>example</p></a><p>A post shared by <a href=\\"https://instagram.com/michaeldeboey\\">Michaël De Boey</a> (@michaeldeboey) on<timedatetime=\\"2020-01-02T14:45:30+00:00\\">Jan 2, 2020 at 6:45am PST</time></p></div></blockquote>
-    "
   `);
 });

@@ -3,7 +3,7 @@ import cases from 'jest-in-case';
 import plugin from '../../';
 import { getHTML, shouldTransform } from '../../transformers/CodePen';
 
-import { cache, getMarkdownASTForFile, parseASTToMarkdown } from '../helpers';
+import { cache, getMarkdownASTForFile, mdastToHtml } from '../helpers';
 
 cases(
   'url validation',
@@ -82,7 +82,7 @@ test('Gets the correct CodePen iframe', () => {
   const html = getHTML('https://codepen.io/team/codepen/pen/PNaGbb');
 
   expect(html).toMatchInlineSnapshot(
-    `"<iframe src=\\"https://codepen.io/team/codepen/embed/preview/PNaGbb\\" style=\\"width:100%; height:300px;\\"></iframe>"`
+    `<iframe src="https://codepen.io/team/codepen/embed/preview/PNaGbb" style="width:100%; height:300px;"></iframe>`
   );
 });
 
@@ -91,38 +91,23 @@ test('Plugin can transform CodePen links', async () => {
 
   const processedAST = await plugin({ cache, markdownAST });
 
-  expect(parseASTToMarkdown(processedAST)).toMatchInlineSnapshot(`
-    "<https://not-a-codepen-url.com>
+  expect(mdastToHtml(processedAST)).toMatchInlineSnapshot(`
+    <p>https://not-a-codepen-url.com</p>
+    <p>https://this-is-not-codepen.io</p>
+    <p>https://this-is-not-codepen.io/user/embed/123456</p>
+    <p>https://this-is-not-codepen.io/user/pen/123456</p>
+    <p>https://codepen.io/team/codepen</p>
+    <p>https://codepen.io/MichaelDeBoey</p>
+    <p>https://codepen.io/random-page</p>
+    <p>https://blog.codepen.io</p>
+    <p>https://blog.codepen.io/user/embed/123456</p>
+    <p>https://blog.codepen.io/user/pen/123456</p>
+    <p>https://codepen.io/team/codepen/embed/PNaGbb</p>
+    <p>https://codepen.io/team/codepen/embed/PNaGbb?default-tab=js</p>
+    <iframe src="https://codepen.io/team/codepen/embed/preview/PNaGbb" style="width:100%; height:300px;"></iframe>
+    <iframe src="https://www.codepen.io/team/codepen/embed/preview/PNaGbb" style="width:100%; height:300px;"></iframe>
+    <iframe src="https://codepen.io/chriscoyier/embed/preview/owBwKM" style="width:100%; height:300px;"></iframe>
+    <iframe src="https://www.codepen.io/chriscoyier/embed/preview/owBwKM" style="width:100%; height:300px;"></iframe>
 
-    <https://this-is-not-codepen.io>
-
-    <https://this-is-not-codepen.io/user/embed/123456>
-
-    <https://this-is-not-codepen.io/user/pen/123456>
-
-    <https://codepen.io/team/codepen>
-
-    <https://codepen.io/MichaelDeBoey>
-
-    <https://codepen.io/random-page>
-
-    <https://blog.codepen.io>
-
-    <https://blog.codepen.io/user/embed/123456>
-
-    <https://blog.codepen.io/user/pen/123456>
-
-    <https://codepen.io/team/codepen/embed/PNaGbb>
-
-    <https://codepen.io/team/codepen/embed/PNaGbb?default-tab=js>
-
-    <iframe src=\\"https://codepen.io/team/codepen/embed/preview/PNaGbb\\" style=\\"width:100%; height:300px;\\"></iframe>
-
-    <iframe src=\\"https://www.codepen.io/team/codepen/embed/preview/PNaGbb\\" style=\\"width:100%; height:300px;\\"></iframe>
-
-    <iframe src=\\"https://codepen.io/chriscoyier/embed/preview/owBwKM\\" style=\\"width:100%; height:300px;\\"></iframe>
-
-    <iframe src=\\"https://www.codepen.io/chriscoyier/embed/preview/owBwKM\\" style=\\"width:100%; height:300px;\\"></iframe>
-    "
   `);
 });

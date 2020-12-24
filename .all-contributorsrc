@@ -1,13 +1,16 @@
 {
   "projectName": "gatsby-remark-embedder",
   "projectOwner": "MichaelDeBoey",
+  "imageSize": 100,
+  "commit": false,
+  "commitConvention": "none",
+  "contributorsPerLine": 7,
+  "skipCi": true,
   "repoType": "github",
   "repoHost": "https://github.com",
   "files": [
     "README.md"
   ],
-  "imageSize": 100,
-  "commit": false,
   "contributors": [
     {
       "login": "kentcdodds",
@@ -200,9 +203,44 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "teeaarbee",
+      "name": "TEEAARBEE",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/65780147?v=4",
+      "profile": "https://teeaarbee.com/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "trevorblades",
+      "name": "Trevor Blades",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1216917?v=4",
+      "profile": "https://trevorblades.com",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "wooorm",
+      "name": "Titus",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/944406?v=4",
+      "profile": "http://wooorm.com",
+      "contributions": [
+        "test",
+        "review",
+        "code"
+      ]
+    },
+    {
+      "login": "jsjoeio",
+      "name": "Joe Previte",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/3806031?v=4",
+      "profile": "https://joeprevite.com",
+      "contributions": [
+        "bug"
+      ]
     }
-  ],
-  "contributorsPerLine": 7,
-  "commitConvention": "none",
-  "skipCi": true
+  ]
 }

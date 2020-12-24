@@ -2,7 +2,7 @@
   "name": "gatsby-remark-embedder",
   "version": "0.0.0-semantically-released",
   "description": "Gatsby Remark plugin to embed well known services by their URL.",
-  "main": "./index.js",
+  "main": "./dist/index.js",
   "keywords": [
     "gatsby",
     "gatsby-plugin",
@@ -20,6 +20,7 @@
     "soundcloud",
     "spotify",
     "streamable",
+    "testing playground",
     "twitch",
     "twitter",
     "youtube"
@@ -35,8 +36,7 @@
   },
   "homepage": "https://github.com/MichaelDeBoey/gatsby-remark-embedder#readme",
   "files": [
-    "dist",
-    "index.js"
+    "dist"
   ],
   "scripts": {
     "build": "kcd-scripts build",
@@ -47,16 +47,19 @@
     "validate": "kcd-scripts validate"
   },
   "dependencies": {
-    "@babel/runtime": "^7.10.5",
+    "@babel/runtime": "^7.12.5",
     "fetch-retry": "^4.0.1",
-    "node-fetch": "^2.6.0",
+    "hast-util-from-parse5": "^6.0.1",
+    "node-fetch": "^2.6.1",
+    "parse5": "^6.0.1",
     "unist-util-visit": "^2.0.3"
   },
   "devDependencies": {
     "jest-in-case": "^1.0.2",
-    "kcd-scripts": "^6.2.4",
-    "pretty-quick": "^2.0.1",
-    "remark": "^12.0.1"
+    "kcd-scripts": "^7.5.3",
+    "pretty-quick": "^3.1.0",
+    "remark": "^13.0.0",
+    "remark-html": "^13.0.1"
   },
   "peerDependencies": {
     "gatsby": "^2.20.0"
